@@ -1,17 +1,19 @@
 const express = require('express');
-const { v4: uuid } = require('uuid');
+const db = require('monk')('localhost/products_CRUD');
 
 const router = express.Router();
 
-let products = [];
+const products = db.get('products');
 
-router.get('/', (req, res) => {
-  res.json(products);
+router.get('/', async (req, res) => {
+  const p = await products.find({});
+
+  res.json(p);
 });
 
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  const product = products.find((p) => p.id === id);
+  const product = await products.findOne({ _id: id });
 
   res.json({
     success: true,
@@ -20,10 +22,9 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-  let product = await req.body;
-  product = { id: uuid(), ...product };
+  const product = await req.body;
 
-  products.push(product);
+  await products.insert(product);
 
   res.json({
     success: true,
@@ -35,23 +36,12 @@ router.put('/:id', async (req, res) => {
   const { id } = req.params;
   const product = await req.body;
 
-  products = products.map((p) => {
-    if (p.id === id) {
-      return {
-        id: p.id,
-        // ...product
-        name: product.name,
-        price: product.price,
-        stock: product.stock
-      };
-    }
-    return p;
-  });
+  await products.findOneAndUpdate({ _id: id }, { $set: product });
 
   res.json({
     success: true,
     product: {
-      id,
+      _id: id,
       ...product
     }
   });
@@ -59,7 +49,8 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
   const { id } = await req.params;
-  products = products.filter((p) => p.id !== id);
+  await products.remove({ _id: id });
+
   res.json({
     success: true,
     message: 'Deleted'
