@@ -19,7 +19,8 @@
     "helmet": "^3.23.3",
     "monk": "^7.3.1",
     "morgan": "^1.10.0",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "yup": "^0.29.3"
   },
   "devDependencies": {
     "eslint": "^7.5.0",
