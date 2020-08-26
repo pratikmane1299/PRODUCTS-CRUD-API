@@ -1,16 +1,15 @@
 const express = require('express');
-const db = require('monk')('localhost/products_CRUD');
 const yup = require('yup');
+const { db } = require('../db/db');
 
 const router = express.Router();
+const products = db.get('products');
 
 const productSchema = yup.object().shape({
   name: yup.string().trim().required(),
   price: yup.number().required(),
   stock: yup.number().required(),
 });
-
-const products = db.get('products');
 
 router.get('/', async (req, res) => {
   const p = await products.find({});
