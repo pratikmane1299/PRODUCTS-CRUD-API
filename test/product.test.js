@@ -9,12 +9,10 @@ const { db } = require('../src/db/db');
 
 describe('Products API', () => {
   let products;
-  // eslint-disable-next-line no-undef
   before(() => {
     products = db.create('products');
   });
 
-  // eslint-disable-next-line no-undef
   after(() => {
     products.drop();
   });
@@ -35,9 +33,11 @@ describe('Products API', () => {
     let product;
     before(async () => {
       product = await products.insert({
-        name: 'Pizza',
-        price: 200,
-        stock: 8
+        name: 'Laptop',
+        price: 30000,
+        stock: 9,
+        imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
+        description: "It's a brand new Laptop."
       });
     });
 
@@ -54,6 +54,8 @@ describe('Products API', () => {
           expect(res.body.product).to.have.property('name');
           expect(res.body.product).to.have.property('price');
           expect(res.body.product).to.have.property('stock');
+          expect(res.body.product).to.have.property('imageUrl');
+          expect(res.body.product).to.have.property('description');
           done();
         });
     });
@@ -66,9 +68,11 @@ describe('Products API', () => {
   describe('POST /api/v1/products', () => {
     it('Add new product', (done) => {
       const product = {
-        name: 'Red Velvet Cake',
-        price: 360,
-        stock: 5
+        name: 'Laptop',
+        price: 30000,
+        stock: 9,
+        imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
+        description: "It's a brand new Laptop."
       };
       request(app)
         .post('/api/v1/products')
@@ -82,6 +86,8 @@ describe('Products API', () => {
           expect(res.body.product).to.have.property('name');
           expect(res.body.product).to.have.property('price');
           expect(res.body.product).to.have.property('stock');
+          expect(res.body.product).to.have.property('imageUrl');
+          expect(res.body.product).to.have.property('description');
           done();
         });
     });
@@ -91,17 +97,21 @@ describe('Products API', () => {
     let product;
     before(async () => {
       product = await products.insert({
-        name: 'Pizza',
-        price: 200,
-        stock: 8
+        name: 'Laptop',
+        price: 30000,
+        stock: 9,
+        imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
+        description: "It's a brand new Laptop."
       });
     });
 
     it('Should update a product', (done) => {
       const newProduct = {
-        name: 'Paneer Cheese Pizza',
-        price: 220,
-        stock: 5
+        name: 'Laptop',
+        price: 35000,
+        stock: 20,
+        imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
+        description: "It's a brand new Laptop with latest and the greatest features."
       };
       request(app)
         .put(`/api/v1/products/${product._id}`)
@@ -115,6 +125,8 @@ describe('Products API', () => {
           expect(res.body.product).to.have.property('name');
           expect(res.body.product).to.have.property('price');
           expect(res.body.product).to.have.property('stock');
+          expect(res.body.product).to.have.property('imageUrl');
+          expect(res.body.product).to.have.property('description');
           done();
         });
     });
@@ -128,9 +140,11 @@ describe('Products API', () => {
     let product;
     before(async () => {
       product = await products.insert({
-        name: 'Pizza',
-        price: 200,
-        stock: 8
+        name: 'Laptop',
+        price: 30000,
+        stock: 9,
+        imageUrl: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60',
+        description: "It's a brand new Laptop."
       });
     });
 
