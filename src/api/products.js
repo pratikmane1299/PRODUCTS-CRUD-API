@@ -7,8 +7,10 @@ const products = db.get('products');
 
 const productSchema = yup.object().shape({
   name: yup.string().trim().required(),
-  price: yup.number().required(),
-  stock: yup.number().required(),
+  price: yup.number().required().positive(),
+  description: yup.string().trim().required().max(100, 'Description should not have more than 100 chars'),
+  imageUrl: yup.string().url().trim().required(),
+  stock: yup.number().required().positive().integer(),
 });
 
 router.get('/', async (req, res) => {
