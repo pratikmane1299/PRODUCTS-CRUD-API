@@ -6,11 +6,28 @@ const router = express.Router();
 const products = db.get('products');
 
 const productSchema = yup.object().shape({
-  name: yup.string().trim().required(),
-  price: yup.number().required().positive(),
-  description: yup.string().trim().required().max(100, 'Description should not have more than 100 chars'),
-  imageUrl: yup.string().url().trim().required(),
-  stock: yup.number().required().positive().integer(),
+  name: yup
+    .string()
+    .trim()
+    .required('Name is required'),
+  price: yup
+    .number('Price is not a valid number')
+    .required('Price is required')
+    .positive('Price must be greater than 0'),
+  description: yup
+    .string()
+    .trim()
+    .required('Description is required')
+    .max(100, 'Description should not have more than 100 chars'),
+  imageUrl: yup
+    .string()
+    .url('Image Url is not a valid Url')
+    .trim().required('Image Url is required'),
+  stock: yup
+    .number()
+    .required('Stock is required')
+    .positive()
+    .integer(),
 });
 
 router.get('/', async (req, res) => {
@@ -33,7 +50,7 @@ router.post('/', async (req, res, next) => {
   try {
     const product = await req.body;
 
-    await productSchema.validate(product);
+    await productSchema.validate(product, { abortEarly: false });
 
     await products.insert(product);
 
@@ -44,6 +61,14 @@ router.post('/', async (req, res, next) => {
   } catch (error) {
     if (error.name === 'ValidationError') {
       error.status = 400;
+      let errors = {};
+      error.inner.forEach((e) => {
+        errors = {
+          ...errors,
+          [e.path]: e.message
+        };
+      });
+      error.validationErrors = errors;
     }
     next(error);
   }
@@ -54,7 +79,7 @@ router.put('/:id', async (req, res, next) => {
     const { id } = req.params;
     const product = await req.body;
 
-    await productSchema.validate(product);
+    await productSchema.validate(product, { abortEarly: false });
 
     await products.findOneAndUpdate({ _id: id }, { $set: product });
 
@@ -68,6 +93,14 @@ router.put('/:id', async (req, res, next) => {
   } catch (error) {
     if (error.name === 'ValidationError') {
       error.status = 400;
+      let errors = {};
+      error.inner.forEach((e) => {
+        errors = {
+          ...errors,
+          [e.path]: e.message
+        };
+      });
+      error.validationErrors = errors;
     }
     next(error);
   }
